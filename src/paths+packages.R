@@ -1,8 +1,17 @@
 ## paths+packages.R
 
+require(tidyverse)
+require(sf)
+require(raster)
+
 # path to onedrive directory
-path_onedrive <- "C:/Users/samzipper/OneDrive/OneDrive - The University of Kansas/Research/KansasRiverAlluvialAquifer"
-path_plots <- file.path(path_onedrive, "plots")
+path_onedrive <- "C:/Users/samzipper/OneDrive - The University of Kansas"
+path_plots <- file.path(path_onedrive, "Research", "KansasRiver", "plots")
+path_gis <- file.path(path_onedrive, "Research", "KansasRiver", "GIS")
+
+# path and CRS for CDL data
+path_cdl <- file.path(path_onedrive, "GIS_GeneralFiles/USDA_NASS_CDL/Kansas")
+crs_cdl <- new("CRS", projargs = "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 
 # ggplot theme
 windowsFonts(Arial=windowsFont("TT Arial"))
