@@ -1,0 +1,265 @@
+domain,year,cdl_group,sum_cells
+Aquifer,2008,Alfalfa/Hay,30871
+Aquifer,2008,Corn,358890
+Aquifer,2008,Developed,248577
+Aquifer,2008,Forest,280356
+Aquifer,2008,Grass/Pasture,409786
+Aquifer,2008,Open Water/Barren,86806
+Aquifer,2008,Other,3907
+Aquifer,2008,Sorghum,12234
+Aquifer,2008,Soy,416828
+Aquifer,2008,Wetlands,23760
+Aquifer,2008,Win Wheat/Soy,15288
+Aquifer,2008,Winter Wheat,39094
+Watershed,2008,Alfalfa/Hay,423851
+Watershed,2008,Corn,1115638
+Watershed,2008,Developed,1573068
+Watershed,2008,Forest,2175588
+Watershed,2008,Grass/Pasture,8833461
+Watershed,2008,Open Water/Barren,331030
+Watershed,2008,Other,27945
+Watershed,2008,Sorghum,65747
+Watershed,2008,Soy,1555285
+Watershed,2008,Wetlands,46506
+Watershed,2008,Win Wheat/Soy,61713
+Watershed,2008,Winter Wheat,273705
+Aquifer,2009,Alfalfa/Hay,25649
+Aquifer,2009,Corn,415639
+Aquifer,2009,Developed,242891
+Aquifer,2009,Forest,270437
+Aquifer,2009,Grass/Pasture,394385
+Aquifer,2009,Open Water/Barren,86547
+Aquifer,2009,Other,3482
+Aquifer,2009,Sorghum,10975
+Aquifer,2009,Soy,407294
+Aquifer,2009,Wetlands,30433
+Aquifer,2009,Win Wheat/Soy,10539
+Aquifer,2009,Winter Wheat,28126
+Watershed,2009,Alfalfa/Hay,377432
+Watershed,2009,Corn,1355030
+Watershed,2009,Developed,1557982
+Watershed,2009,Forest,2153358
+Watershed,2009,Grass/Pasture,8780771
+Watershed,2009,Open Water/Barren,328158
+Watershed,2009,Other,25809
+Watershed,2009,Sorghum,65733
+Watershed,2009,Soy,1571382
+Watershed,2009,Wetlands,56392
+Watershed,2009,Win Wheat/Soy,33088
+Watershed,2009,Winter Wheat,178402
+Aquifer,2010,Alfalfa/Hay,6290
+Aquifer,2010,Corn,353679
+Aquifer,2010,Developed,234964
+Aquifer,2010,Forest,291388
+Aquifer,2010,Grass/Pasture,448410
+Aquifer,2010,Open Water/Barren,98380
+Aquifer,2010,Other,3496
+Aquifer,2010,Sorghum,3602
+Aquifer,2010,Soy,420436
+Aquifer,2010,Wetlands,46838
+Aquifer,2010,Win Wheat/Soy,5512
+Aquifer,2010,Winter Wheat,13548
+Watershed,2010,Alfalfa/Hay,33121
+Watershed,2010,Corn,1234555
+Watershed,2010,Developed,1480834
+Watershed,2010,Forest,2500648
+Watershed,2010,Grass/Pasture,9041865
+Watershed,2010,Open Water/Barren,369317
+Watershed,2010,Other,37490
+Watershed,2010,Sorghum,24223
+Watershed,2010,Soy,1567286
+Watershed,2010,Wetlands,86276
+Watershed,2010,Win Wheat/Soy,18465
+Watershed,2010,Winter Wheat,99665
+Aquifer,2011,Alfalfa/Hay,9749
+Aquifer,2011,Corn,426643
+Aquifer,2011,Developed,247785
+Aquifer,2011,Forest,289861
+Aquifer,2011,Grass/Pasture,374594
+Aquifer,2011,Open Water/Barren,86465
+Aquifer,2011,Other,5946
+Aquifer,2011,Sorghum,4102
+Aquifer,2011,Soy,417581
+Aquifer,2011,Wetlands,37497
+Aquifer,2011,Win Wheat/Soy,5842
+Aquifer,2011,Winter Wheat,20478
+Watershed,2011,Alfalfa/Hay,46061
+Watershed,2011,Corn,1426612
+Watershed,2011,Developed,1570178
+Watershed,2011,Forest,2417441
+Watershed,2011,Grass/Pasture,8720367
+Watershed,2011,Open Water/Barren,348511
+Watershed,2011,Other,48147
+Watershed,2011,Sorghum,34305
+Watershed,2011,Soy,1616303
+Watershed,2011,Wetlands,62985
+Watershed,2011,Win Wheat/Soy,28456
+Watershed,2011,Winter Wheat,174379
+Aquifer,2012,Alfalfa/Hay,9214
+Aquifer,2012,Corn,392836
+Aquifer,2012,Developed,248951
+Aquifer,2012,Forest,297789
+Aquifer,2012,Grass/Pasture,394875
+Aquifer,2012,Open Water/Barren,83150
+Aquifer,2012,Other,7816
+Aquifer,2012,Sorghum,2615
+Aquifer,2012,Soy,435683
+Aquifer,2012,Wetlands,27798
+Aquifer,2012,Win Wheat/Soy,8584
+Aquifer,2012,Winter Wheat,17232
+Watershed,2012,Alfalfa/Hay,42136
+Watershed,2012,Corn,1345375
+Watershed,2012,Developed,1572934
+Watershed,2012,Forest,2398411
+Watershed,2012,Grass/Pasture,8823833
+Watershed,2012,Open Water/Barren,337403
+Watershed,2012,Other,59693
+Watershed,2012,Sorghum,20716
+Watershed,2012,Soy,1644874
+Watershed,2012,Wetlands,46392
+Watershed,2012,Win Wheat/Soy,56737
+Watershed,2012,Winter Wheat,145241
+Aquifer,2013,Alfalfa/Hay,87235
+Aquifer,2013,Corn,447735
+Aquifer,2013,Developed,243143
+Aquifer,2013,Forest,285378
+Aquifer,2013,Grass/Pasture,260031
+Aquifer,2013,Open Water/Barren,87923
+Aquifer,2013,Other,12670
+Aquifer,2013,Sorghum,6696
+Aquifer,2013,Soy,418941
+Aquifer,2013,Wetlands,30821
+Aquifer,2013,Win Wheat/Soy,10989
+Aquifer,2013,Winter Wheat,34835
+Watershed,2013,Alfalfa/Hay,2048566
+Watershed,2013,Corn,1519483
+Watershed,2013,Developed,1558917
+Watershed,2013,Forest,2368309
+Watershed,2013,Grass/Pasture,6444528
+Watershed,2013,Open Water/Barren,352141
+Watershed,2013,Other,61939
+Watershed,2013,Sorghum,50185
+Watershed,2013,Soy,1707374
+Watershed,2013,Wetlands,48991
+Watershed,2013,Win Wheat/Soy,38538
+Watershed,2013,Winter Wheat,284566
+Aquifer,2014,Alfalfa/Hay,42917
+Aquifer,2014,Corn,396661
+Aquifer,2014,Developed,252793
+Aquifer,2014,Forest,298728
+Aquifer,2014,Grass/Pasture,341912
+Aquifer,2014,Open Water/Barren,95678
+Aquifer,2014,Other,9250
+Aquifer,2014,Sorghum,2391
+Aquifer,2014,Soy,436184
+Aquifer,2014,Wetlands,26035
+Aquifer,2014,Win Wheat/Soy,6460
+Aquifer,2014,Winter Wheat,17388
+Watershed,2014,Alfalfa/Hay,969123
+Watershed,2014,Corn,1355660
+Watershed,2014,Developed,1601752
+Watershed,2014,Forest,2358536
+Watershed,2014,Grass/Pasture,7806414
+Watershed,2014,Open Water/Barren,370320
+Watershed,2014,Other,36291
+Watershed,2014,Sorghum,17184
+Watershed,2014,Soy,1719312
+Watershed,2014,Wetlands,46387
+Watershed,2014,Win Wheat/Soy,36943
+Watershed,2014,Winter Wheat,165615
+Aquifer,2015,Alfalfa/Hay,33067
+Aquifer,2015,Corn,421155
+Aquifer,2015,Developed,246907
+Aquifer,2015,Forest,305747
+Aquifer,2015,Grass/Pasture,304691
+Aquifer,2015,Open Water/Barren,91740
+Aquifer,2015,Other,22085
+Aquifer,2015,Sorghum,11667
+Aquifer,2015,Soy,427809
+Aquifer,2015,Wetlands,30248
+Aquifer,2015,Win Wheat/Soy,8253
+Aquifer,2015,Winter Wheat,23028
+Watershed,2015,Alfalfa/Hay,490341
+Watershed,2015,Corn,1420017
+Watershed,2015,Developed,1588061
+Watershed,2015,Forest,2508223
+Watershed,2015,Grass/Pasture,7924515
+Watershed,2015,Open Water/Barren,356313
+Watershed,2015,Other,204026
+Watershed,2015,Sorghum,62251
+Watershed,2015,Soy,1645457
+Watershed,2015,Wetlands,54097
+Watershed,2015,Win Wheat/Soy,38875
+Watershed,2015,Winter Wheat,191361
+Aquifer,2016,Alfalfa/Hay,32177
+Aquifer,2016,Corn,437924
+Aquifer,2016,Developed,246256
+Aquifer,2016,Forest,299843
+Aquifer,2016,Grass/Pasture,307667
+Aquifer,2016,Open Water/Barren,91824
+Aquifer,2016,Other,10521
+Aquifer,2016,Sorghum,13152
+Aquifer,2016,Soy,429580
+Aquifer,2016,Wetlands,31169
+Aquifer,2016,Win Wheat/Soy,6266
+Aquifer,2016,Winter Wheat,20164
+Watershed,2016,Alfalfa/Hay,496684
+Watershed,2016,Corn,1592232
+Watershed,2016,Developed,1586952
+Watershed,2016,Forest,2454980
+Watershed,2016,Grass/Pasture,7904414
+Watershed,2016,Open Water/Barren,355808
+Watershed,2016,Other,64218
+Watershed,2016,Sorghum,56964
+Watershed,2016,Soy,1748953
+Watershed,2016,Wetlands,57941
+Watershed,2016,Win Wheat/Soy,34304
+Watershed,2016,Winter Wheat,140295
+Aquifer,2017,Alfalfa/Hay,33433
+Aquifer,2017,Corn,405861
+Aquifer,2017,Developed,247328
+Aquifer,2017,Forest,314387
+Aquifer,2017,Grass/Pasture,298056
+Aquifer,2017,Open Water/Barren,92436
+Aquifer,2017,Other,3925
+Aquifer,2017,Sorghum,5238
+Aquifer,2017,Soy,485943
+Aquifer,2017,Wetlands,24549
+Aquifer,2017,Win Wheat/Soy,5797
+Aquifer,2017,Winter Wheat,9590
+Watershed,2017,Alfalfa/Hay,513906
+Watershed,2017,Corn,1503001
+Watershed,2017,Developed,1589647
+Watershed,2017,Forest,2502511
+Watershed,2017,Grass/Pasture,7823773
+Watershed,2017,Open Water/Barren,354820
+Watershed,2017,Other,40844
+Watershed,2017,Sorghum,19487
+Watershed,2017,Soy,1991124
+Watershed,2017,Wetlands,48599
+Watershed,2017,Win Wheat/Soy,30011
+Watershed,2017,Winter Wheat,76022
+Aquifer,2018,Alfalfa/Hay,39159
+Aquifer,2018,Corn,404374
+Aquifer,2018,Developed,246063
+Aquifer,2018,Forest,285903
+Aquifer,2018,Grass/Pasture,290827
+Aquifer,2018,Open Water/Barren,96610
+Aquifer,2018,Other,10792
+Aquifer,2018,Sorghum,3008
+Aquifer,2018,Soy,488373
+Aquifer,2018,Wetlands,43804
+Aquifer,2018,Win Wheat/Soy,4795
+Aquifer,2018,Winter Wheat,12689
+Watershed,2018,Alfalfa/Hay,618803
+Watershed,2018,Corn,1532821
+Watershed,2018,Developed,1584326
+Watershed,2018,Forest,2430621
+Watershed,2018,Grass/Pasture,7691157
+Watershed,2018,Open Water/Barren,369721
+Watershed,2018,Other,57858
+Watershed,2018,Sorghum,22082
+Watershed,2018,Soy,1980432
+Watershed,2018,Wetlands,78521
+Watershed,2018,Win Wheat/Soy,26473
+Watershed,2018,Winter Wheat,90722
