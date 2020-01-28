@@ -13,6 +13,20 @@ path_gis <- file.path(path_onedrive, "Research", "KansasRiver", "GIS")
 path_cdl <- file.path(path_onedrive, "GIS_GeneralFiles/USDA_NASS_CDL/Kansas")
 crs_cdl <- new("CRS", projargs = "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 
+# color palettes
+pal_cdl <- c("Alfalfa/Hay" = "#FFA8E3", 
+             "Corn" = "#FFD400",
+             "Developed" = "#9C9C9C", 
+             "Forest" = "#95CE93", 
+             "Grass/Pasture" = "#E9FFBE", 
+             "Open Water/Barren" = "#4D70A3", 
+             "Other" = "white", 
+             "Sorghum" = "#FF9E0F", 
+             "Soy" = "#1C7300", 
+             "Wetlands" = "#80B3B3", 
+             "Win Wheat/Soy" = "#737300", 
+             "Winter Wheat" = "#A87000")
+
 # ggplot theme
 windowsFonts(Arial=windowsFont("TT Arial"))
 theme_scz <- function(...){
