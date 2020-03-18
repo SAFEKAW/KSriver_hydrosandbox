@@ -1,4 +1,4 @@
-## CDL_03_PlotAnnualStats.R
+## Figure_Map-EKSRB-CDLwithGages.R
 
 source(file.path("src", "paths+packages.R"))
 
@@ -23,6 +23,9 @@ sf_rivers <-
 sf_wells <- 
   sf::st_read(file.path(path_gis, "KSriver_IndexWells.gpkg")) %>% 
   sf::st_transform(crs = crs(r_cdl))
+
+###### add WIMAS
+###### add nitrate
 
 ## prep USGS gaging stations
 require(dataRetrieval)
