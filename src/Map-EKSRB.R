@@ -1,4 +1,4 @@
-## Figure_Map-EKSRB-CDLwithGages.R
+## Map-EKSRB.R
 
 source(file.path("src", "paths+packages.R"))
 
@@ -15,13 +15,13 @@ cdl_categories <-
                                121, 122, 123, 124, 
                                131, 141, 176, 190),
                  cdl_group = c("Corn", "Sorghum", "Soy", "Wheat", "Wheat",
-                               "Alfalfa/Hay", "Alfalfa/Hay", "Open Water",
+                               "Alfalfa/Hay", "Alfalfa/Hay", "Water",
                                "Developed", "Developed", "Developed", "Developed",
-                               "Open Water", "Forest", "Grass/Pasture", "Wetland"))
+                               "Water", "Forest", "Grass/Pasture", "Water"))
 
 df_cdl_grouped <- 
-  dplyr::left_join(df_cdl, cdl_categories, by = "cdl_class") %>% 
-  tidyr::replace_na(list(cdl_group = "Other"))
+  dplyr::left_join(df_cdl, cdl_categories, by = "cdl_class")# %>% 
+ # tidyr::replace_na(list(cdl_group = "Other"))
 
 ## watershed boundary
 sf_boundary <- 
@@ -114,14 +114,36 @@ p_state <-
   geom_sf(data = subset(sf_rivers_EKSRB, STRAHLER >= 4), color = col.cat.blu) +
   theme(panel.border = element_blank()) +
   coord_sf(expand = T) +
-  labs(title = "Location of EKSRB within Kansas") +
+  labs(title = "(a) Location of EKSRB within Kansas") +
   ggsave(file.path("plots", "Figure_EKSRB-Map_LocationWithinState.png"),
          width = 95, height = 80, units = "mm") +
   NULL
 
+# land cover map
+p_cdl <-
+  ggplot() +
+  geom_raster(data = subset(df_cdl_grouped, !is.na(cdl_group)), aes(x = lon, y = lat, fill = cdl_group)) +
+  scale_fill_manual(name = NULL, values = pal_cdl) +
+  #geom_sf(data = sf_wimas[1:10, ]) +
+  geom_sf(data = sf_boundary, color = "black", fill = NA) +
+  scale_x_continuous(breaks = seq(-97, -95, 1)) +
+  scale_y_continuous(breaks = seq(38.6, 39.8, 0.4)) +
+  coord_sf(expand = T) +
+  labs(title = "(b) Land cover [2018 CDL]") +
+  theme(axis.title = element_blank(),
+        legend.position = "bottom",
+        panel.border = element_blank()) +
+  guides(fill = guide_legend(nrow = 3)) +
+  NULL
 
+#table(df_cdl_grouped$cdl_group)
 
-# focus area map
+(p_state + p_cdl + plot_layout(nrow = 2, heights = c(1, 1.5))) %>% 
+  ggsave(file.path("plots", "Map-EKSRB_State+CDL.png"),
+         plot = .,
+         width = 100, height = 120, units = "mm")
+
+## focus area map
 x_extent <- sf::st_bbox(sf_boundary)[c("xmin", "xmax")]
 y_extent <- sf::st_bbox(sf_boundary)[c("ymin", "ymax")]
 tribs_plot <- c("REPUBLICAN R", "SMOKEY HILL R", "BIG BLUE R", "LITTLE BLUE R", "COON CR")
@@ -141,34 +163,12 @@ p_monitoring <-
   scale_x_continuous(breaks = seq(-97, -95, 1)) +
   scale_y_continuous(breaks = seq(38.6, 39.8, 0.4)) +
   labs(title = "(b) EKSRB monitoring network") +
+  ggsave(file.path("plots", "Map-EKSRB_Monitoring.png"), width = 95, height = 95, units = "in") +
 #  geom_raster(data = dplyr::sample_frac(df_cdl, 0.1), aes(x = lon, y = lat, fill = CDL))
   NULL
 
-# CDL
-df_wimas <- 
-  tibble::tibble(long = sf::st_coordinates(sf_wimas)[,1],
-                 lat = sf::st_coordinates(sf_wimas)[,2],
-                 source = sf_wimas$source)
 
-p_cdl <-
-  ggplot() +
-  geom_raster(data = df_cdl_grouped, aes(x = lon, y = lat, fill = cdl_group)) +
-  scale_fill_manual(name = NULL, values = pal_cdl) +
-  #geom_sf(data = sf_wimas[1:10, ]) +
-  geom_sf(data = sf_boundary, color = "black", fill = NA) +
-  coord_sf(xlim = x_extent, ylim = y_extent, expand = T,
-           label_axes = list(bottom = "E", left = "N")) +
-  scale_x_continuous(breaks = seq(-97, -95, 1)) +
-  scale_y_continuous(breaks = seq(38.6, 39.8, 0.4)) +
-  labs(title = "(a) Land cover [2018 CDL]") +
-  theme(axis.title = element_blank(),
-        legend.position = "bottom") +
-  guides(fill = guide_legend(nrow = 4)) +
-  NULL
-
-#table(df_cdl_grouped$cdl_group)
-
-(p_cdl + p_monitoring) %>% 
-  ggsave(file.path("plots", "Figure_EKSRB-Map_Monitoring+CDL.png"),
-         plot = .,
-         width = 190, height = 120, units = "mm")
+# (p_cdl + p_monitoring) %>% 
+#   ggsave(file.path("plots", "Figure_EKSRB-Map_Monitoring+CDL.png"),
+#          plot = .,
+#          width = 190, height = 120, units = "mm")
