@@ -3,11 +3,13 @@
 require(tidyverse)
 require(sf)
 require(raster)
+require(patchwork)
 
 # path to onedrive directory
 path_onedrive <- "C:/Users/samzipper/OneDrive - The University of Kansas"
 path_plots <- file.path(path_onedrive, "Research", "KansasRiver", "plots")
 path_gis <- file.path(path_onedrive, "Research", "KansasRiver", "GIS")
+path_gis_general <- file.path(path_onedrive, "Research", "Kansas", "GISdata")
 
 # path and CRS for CDL data
 path_cdl <- file.path(path_onedrive, "GIS_GeneralFiles/USDA_NASS_CDL/Kansas")
@@ -20,12 +22,22 @@ pal_cdl <- c("Alfalfa/Hay" = "#FFA8E3",
              "Forest" = "#95CE93", 
              "Grass/Pasture" = "#E9FFBE", 
              "Open Water/Barren" = "#4D70A3", 
-             "Other" = "white", 
+             "Open Water" = "#4D70A3", 
+             "Other" = "purple", 
              "Sorghum" = "#FF9E0F", 
              "Soy" = "#1C7300", 
              "Wetlands" = "#80B3B3", 
+             "Wetland" = "#80B3B3", 
              "Win Wheat/Soy" = "#737300", 
-             "Winter Wheat" = "#A87000")
+             "Winter Wheat" = "#A87000", 
+             "Wheat" = "#A87000")
+
+col.cat.grn <- "#3cb44b"   # green
+col.cat.yel <- "#ffe119"   # yellow
+col.cat.org <- "#f58231"   # orange
+col.cat.red <- "#e6194b"   # red
+col.cat.blu <- "#0082c8"   # blue
+col.gray <- "gray65"       # gray for annotation lines, etc
 
 # ggplot theme
 windowsFonts(Arial=windowsFont("TT Arial"))
