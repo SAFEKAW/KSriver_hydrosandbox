@@ -141,7 +141,7 @@ p_cdl <-
 (p_state + p_cdl + plot_layout(nrow = 2, heights = c(1, 1.5))) %>% 
   ggsave(file.path("plots", "Map-EKSRB_State+CDL.png"),
          plot = .,
-         width = 100, height = 120, units = "mm")
+         width = 100, height = 140, units = "mm")
 
 ## focus area map
 x_extent <- sf::st_bbox(sf_boundary)[c("xmin", "xmax")]
@@ -156,14 +156,15 @@ p_monitoring <-
   geom_sf(data = subset(sf_rivers_EKSRB, STRAHLER >= 3), color = col.cat.blu) +
   geom_sf(data = sf_USGS_EKSRB, color = col.cat.red, shape = 1, size = 2) +
   geom_sf(data = sf_sensors, color = col.cat.red, size = 2) +
-  geom_sf(data = sf_wells, color = "black", size = 2) +
+  geom_sf(data = sf_wells, color = "black", size = 2, shape = 18) +
 #  geom_sf(data = sf_nitrate, color = "black", shape = 3) +
   coord_sf(xlim = x_extent, ylim = y_extent, expand = T,
            label_axes = list(bottom = "E", left = "N")) +
   scale_x_continuous(breaks = seq(-97, -95, 1)) +
   scale_y_continuous(breaks = seq(38.6, 39.8, 0.4)) +
-  labs(title = "(b) EKSRB monitoring network") +
-  ggsave(file.path("plots", "Map-EKSRB_Monitoring.png"), width = 95, height = 95, units = "in") +
+  labs(title = "EKSRB monitoring network") +
+  ggsave(file.path("plots", "Map-EKSRB_Monitoring.png"), width = 95, height = 75, units = "mm") +
+  ggsave(file.path("plots", "Map-EKSRB_Monitoring.pdf"), width = 95, height = 75, units = "mm", device = cairo_pdf) +
 #  geom_raster(data = dplyr::sample_frac(df_cdl, 0.1), aes(x = lon, y = lat, fill = CDL))
   NULL
 
