@@ -123,10 +123,10 @@ df_wimas_sector_source %>%
   dplyr::summarize(WaterUse_mean = mean(WaterUse_km3),
                    WaterUse_sd = sd(WaterUse_km3)) %>% 
   dplyr::mutate(WaterUse_CV = WaterUse_sd/WaterUse_mean)
-  
+
 sum()
 
-ggplot(df_wimas_sector_source, aes(x = Year, y = WaterUse_af_total, fill = Sector)) +
+ggplot(df_wimas_sector_source, aes(x = Year, y = WaterUse_km3, fill = Sector)) +
   geom_col() +
   facet_wrap(~source, ncol = 1) +
   theme(legend.position = "bottom") +
@@ -137,12 +137,121 @@ ggplot(df_wimas_sector_source, aes(x = Year, y = WaterUse_af_total, fill = Secto
 
 # total irrigation
 ggplot(subset(df_wimas_sector, Sector == "Irrigation"), 
-       aes(x = Year, y = WaterUse_af_total, fill = Sector)) +
+       aes(x = Year, y = WaterUse_km3, fill = Sector)) +
   geom_point() +
   stat_smooth(method = "lm")
 
 ggplot(subset(df_wimas_sector_source, Sector == "Irrigation"), 
-       aes(x = Year, y = WaterUse_af_total, color = source)) +
+       aes(x = Year, y = WaterUse_km3, color = source)) +
   geom_point() +
   stat_smooth(method = "lm") + 
   theme(legend.position = "bottom")
+
+## include gridMET in analysis
+# load gridmet
+df_met_mo <- 
+  file.path(path_onedrive, "Research", "KansasRiver", "KansasRiver_gridMET", "Mean_Monthly_Weather.csv") %>% 
+  readr::read_csv() %>% 
+  dplyr::mutate(Year = lubridate::year(Date),
+                Month = lubridate::month(Date)) %>% 
+  dplyr::select(-X1, Date)
+
+# summarize annual and growing season
+df_met_gs <- 
+  df_met_mo %>% 
+  subset(Month %in% seq(5, 9)) %>% 
+  dplyr::group_by(Year) %>% 
+  dplyr::summarize(Precip_gs_mm = sum(Precip_mm),
+                   ETo_gs_mm = sum(ETo_grass_mm))
+
+df_met <- 
+  file.path(path_onedrive, "Research", "KansasRiver", "KansasRiver_gridMET", "Mean_Annual_Weather.csv") %>% 
+  readr::read_csv() %>% 
+  dplyr::mutate(Year = lubridate::year(Date)) %>% 
+  dplyr::select(-X1, Date)
+
+# change in precip from previous year
+df_met$PrecipChange <- c(NA, df_met$Precip_mm[2:41] - df_met$Precip_mm[1:40])
+
+ggplot(df_met, aes(x = Year, y = Precip_mm)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+ggplot(df_met, aes(x = Year, y = PrecipChange)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+ggplot(df_met, aes(x = Year, y = Tmean)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+df_met %>% 
+  dplyr::select(Year, Precip_mm, ETo_grass_mm) %>% 
+  reshape2::melt(id = "Year") %>% 
+  ggplot(aes(x = Year, y = value, color = variable)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+lm(Precip_mm ~ Year, data = df_met) %>% summary()
+lm(ETo_grass_mm ~ Year, data = df_met) %>% summary()
+
+df_met_gs %>% 
+  dplyr::select(Year, Precip_gs_mm, ETo_gs_mm) %>% 
+  reshape2::melt(id = "Year") %>% 
+  ggplot(aes(x = Year, y = value, color = variable)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+## groundwater use vs. precip
+df_wimas_sector_source_met <-
+  dplyr::left_join(df_wimas_sector_source, df_met, by = "Year")
+
+ggplot(subset(df_wimas_sector_source_met, Sector == "Irrigation"),
+       aes(x = Precip, y = WaterUse_km3, color = source)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+ggplot(subset(df_wimas_sector_source_met, Sector == "Municipal"),
+       aes(x = Precip, y = WaterUse_km3, color = source)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+ggplot(subset(df_wimas_sector_source_met, Sector == "Industrial/Other"),
+       aes(x = Precip, y = WaterUse_km3, color = source)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
+## final plots to save
+p_annualuse <-
+  ggplot(df_wimas_sector, aes(x = Year, y = WaterUse_km3, fill = Sector)) +
+  geom_col() +
+  geom_hline(yintercept = 0, color = "gray65") +
+  scale_y_continuous(name = "Annual Water Use [km\u00B3]") +
+  scale_x_continuous(expand = c(0.01,0.05),
+                     breaks = seq(1990, 2015, 5)) +
+  theme(legend.position = "bottom") +
+  scale_fill_manual(name = NULL, values = c("Irrigation" = col.cat.red,
+                                                "Municipal" = col.cat.blu,
+                                                "Industrial/Other" = col.cat.org)) +
+  labs(title = "(a) Annual Water Use by Sector")
+
+p_irrigation.climate <-
+  ggplot(subset(df_wimas_sector_source_met, Sector == "Irrigation"),
+       aes(x = Precip_mm, y = WaterUse_km3, shape = source, linetype = source)) +
+  stat_smooth(method = "lm", color = "gray45") +
+  geom_point(color = col.cat.red) +
+  scale_y_continuous(name = "Annual Irrigation [km\u00b3]", expand = c(0,0)) +
+  scale_x_continuous(name = "Annual Precipitation [mm]") +
+  scale_shape_manual(name = "Source", values = c("Groundwater" = 19, "Surface Water" = 1)) +
+  scale_linetype_manual(name = "Source", values = c("Groundwater" = 1, "Surface Water" = 2)) +
+  labs(title = "(b) Irrigation Sensitivity to Climate") +
+  coord_cartesian(ylim = c(0, 50)) +
+  theme(legend.position = "bottom") +
+#  theme(legend.position = c(1,1),
+#        legend.justification = c(1.01, 1.01)) +
+  NULL
+
+((p_annualuse / p_irrigation.climate) + plot_layout(heights = c(1, 1.5))) %>% 
+  ggsave(file.path("plots", "WIMAS_AnnualUse+ClimateSensitivity.png"),
+         plot = .,
+         width = 95, height = 140, units = "mm")

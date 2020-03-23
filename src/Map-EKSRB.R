@@ -125,7 +125,7 @@ p_cdl <-
   geom_raster(data = subset(df_cdl_grouped, !is.na(cdl_group)), aes(x = lon, y = lat, fill = cdl_group)) +
   scale_fill_manual(name = NULL, values = pal_cdl) +
   #geom_sf(data = sf_wimas[1:10, ]) +
-  geom_sf(data = sf_boundary, color = "black", fill = NA) +
+  geom_sf(data = sf_boundary, color = NA, fill = NA) +
   scale_x_continuous(breaks = seq(-97, -95, 1)) +
   scale_y_continuous(breaks = seq(38.6, 39.8, 0.4)) +
   coord_sf(expand = T) +
