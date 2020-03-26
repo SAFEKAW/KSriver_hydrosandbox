@@ -254,4 +254,4 @@ p_irrigation.climate <-
 ((p_annualuse / p_irrigation.climate) + plot_layout(heights = c(1, 1.5))) %>% 
   ggsave(file.path("plots", "WIMAS_AnnualUse+ClimateSensitivity.png"),
          plot = .,
-         width = 95, height = 140, units = "mm")
+         width = 94, height = 130, units = "mm")

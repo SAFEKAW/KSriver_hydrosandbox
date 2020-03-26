@@ -4,6 +4,7 @@ require(tidyverse)
 require(sf)
 require(raster)
 require(patchwork)
+require(viridis)
 
 # path to onedrive directory
 path_onedrive <- "C:/Users/samzipper/OneDrive - The University of Kansas"

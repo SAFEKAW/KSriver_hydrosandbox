@@ -47,6 +47,12 @@ sf_wells <-
   sf::st_read(file.path(path_gis, "KSriver_IndexWells.gpkg")) %>% 
   sf::st_transform(crs = crs(r_cdl))
 
+# SVI
+sf_SVI <-
+  file.path(path_gis, "SVI", "KS_SVI.shp") %>% 
+  sf::st_read(stringsAsFactors = F)  %>% 
+  sf::st_transform(crs = crs(r_cdl))
+
 # WIMAS
 sf_wimas <-
   file.path(path_gis, "ks_watershed_wuse.gdb") %>% 
@@ -112,11 +118,11 @@ p_state <-
   geom_sf(data = sf_kansas, color = "black", fill = NA) +
   geom_sf(data = sf_boundary) +
   geom_sf(data = subset(sf_rivers_EKSRB, STRAHLER >= 4), color = col.cat.blu) +
-  theme(panel.border = element_blank()) +
+  scale_y_continuous(breaks = c(37, 39)) +
   coord_sf(expand = T) +
   labs(title = "(a) Location of EKSRB within Kansas") +
-  ggsave(file.path("plots", "Figure_EKSRB-Map_LocationWithinState.png"),
-         width = 95, height = 80, units = "mm") +
+  theme(panel.border = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5)) +
   NULL
 
 # land cover map
@@ -127,10 +133,11 @@ p_cdl <-
   #geom_sf(data = sf_wimas[1:10, ]) +
   geom_sf(data = sf_boundary, color = NA, fill = NA) +
   scale_x_continuous(breaks = seq(-97, -95, 1)) +
-  scale_y_continuous(breaks = seq(38.6, 39.8, 0.4)) +
-  coord_sf(expand = T) +
+  scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
+  coord_sf(expand = F) +
   labs(title = "(b) Land cover [2018 CDL]") +
   theme(axis.title = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
         legend.position = "bottom",
         panel.border = element_blank()) +
   guides(fill = guide_legend(nrow = 3)) +
@@ -141,7 +148,7 @@ p_cdl <-
 (p_state + p_cdl + plot_layout(nrow = 2, heights = c(1, 1.5))) %>% 
   ggsave(file.path("plots", "Map-EKSRB_State+CDL.png"),
          plot = .,
-         width = 100, height = 140, units = "mm")
+         width = 90, height = 140, units = "mm")
 
 ## focus area map
 x_extent <- sf::st_bbox(sf_boundary)[c("xmin", "xmax")]
@@ -157,15 +164,14 @@ p_monitoring <-
   geom_sf(data = sf_USGS_EKSRB, color = col.cat.red, shape = 1, size = 2) +
   geom_sf(data = sf_sensors, color = col.cat.red, size = 2) +
   geom_sf(data = sf_wells, color = "black", size = 2, shape = 18) +
-#  geom_sf(data = sf_nitrate, color = "black", shape = 3) +
-  coord_sf(xlim = x_extent, ylim = y_extent, expand = T,
-           label_axes = list(bottom = "E", left = "N")) +
+  coord_sf(xlim = x_extent, ylim = y_extent, expand = T) +
   scale_x_continuous(breaks = seq(-97, -95, 1)) +
-  scale_y_continuous(breaks = seq(38.6, 39.8, 0.4)) +
+  scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
   labs(title = "EKSRB monitoring network") +
-  ggsave(file.path("plots", "Map-EKSRB_Monitoring.png"), width = 95, height = 75, units = "mm") +
-  ggsave(file.path("plots", "Map-EKSRB_Monitoring.pdf"), width = 95, height = 75, units = "mm", device = cairo_pdf) +
-#  geom_raster(data = dplyr::sample_frac(df_cdl, 0.1), aes(x = lon, y = lat, fill = CDL))
+  theme(axis.title = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5)) +
+  ggsave(file.path("plots", "Map-EKSRB_Monitoring.png"), width = 85, height = 67, units = "mm") +
+  ggsave(file.path("plots", "Map-EKSRB_Monitoring.pdf"), width = 85, height = 67, units = "mm", device = cairo_pdf) +
   NULL
 
 
@@ -173,3 +179,215 @@ p_monitoring <-
 #   ggsave(file.path("plots", "Figure_EKSRB-Map_Monitoring+CDL.png"),
 #          plot = .,
 #          width = 190, height = 120, units = "mm")
+
+
+
+##### climate
+## load climate data from Vaishali
+r_precip_in <- 
+  file.path(path_gis, "US Climate Rasters", "historical", "pr_historical_1981_2010_mm.tif") %>% 
+  raster::raster()
+
+sf_boundary_climate <- sf::st_transform(sf_boundary, crs = raster::crs(r_precip_in))
+
+r_precip_hist <-
+  raster::crop(r_precip_in, sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_precip_r45 <- 
+  file.path(path_gis, "US Climate Rasters", "rcp45", "pr_rcp45_2070_2099_mm.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_precip_r85 <- 
+  file.path(path_gis, "US Climate Rasters", "rcp85", "pr_rcp85_2070_2099_mm.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_tmax_hist <-
+  file.path(path_gis, "US Climate Rasters", "historical", "tmax_historical_1981_2010_Cel.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_tmax_r45 <- 
+  file.path(path_gis, "US Climate Rasters", "rcp45", "tmax_rcp45_2070_2099_Cel.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_tmax_r85 <- 
+  file.path(path_gis, "US Climate Rasters", "rcp85", "tmax_rcp85_2070_2099_Cel.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_tmin_hist <-
+  file.path(path_gis, "US Climate Rasters", "historical", "tmin_historical_1981_2010_Cel.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_tmin_r45 <- 
+  file.path(path_gis, "US Climate Rasters", "rcp45", "tmin_rcp45_2070_2099_Cel.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_tmin_r85 <- 
+  file.path(path_gis, "US Climate Rasters", "rcp85", "tmin_rcp85_2070_2099_Cel.tif") %>% 
+  raster::raster() %>% 
+  raster::crop(sf_boundary_climate) %>% 
+  raster::mask(sf_boundary_climate)
+
+r_tmean_hist <- (r_tmin_hist + r_tmax_hist)/2
+r_tmean_r45 <- (r_tmin_r45 + r_tmax_r45)/2
+r_tmean_r85 <- (r_tmin_r85 + r_tmax_r85)/2
+
+
+# calculate change
+r_tmean_r45_change <- r_tmean_r45 - r_tmean_hist
+r_tmean_r85_change <- r_tmean_r85 - r_tmean_hist
+r_precip_r45_change <- r_precip_r45 - r_precip_hist
+r_precip_r85_change <- r_precip_r85 - r_precip_hist
+
+# convert to data frame
+df_precip_hist <- 
+  as.data.frame(raster::rasterToPoints(r_precip_hist)) %>% 
+  magrittr::set_colnames(c("lon", "lat", "precip_mm"))
+
+df_tmean_hist <- 
+  as.data.frame(raster::rasterToPoints(r_tmean_hist)) %>% 
+  magrittr::set_colnames(c("lon", "lat", "Tmean_C"))
+
+df_precip_r45_change <- 
+  as.data.frame(raster::rasterToPoints(r_precip_r45_change)) %>% 
+  magrittr::set_colnames(c("lon", "lat", "precip_mm_change")) %>% 
+  dplyr::mutate(Scenario = "RCP4.5")
+
+df_precip_r85_change <- 
+  as.data.frame(raster::rasterToPoints(r_precip_r85_change)) %>% 
+  magrittr::set_colnames(c("lon", "lat", "precip_mm_change")) %>% 
+  dplyr::mutate(Scenario = "RCP8.5")
+
+df_precip_change <- dplyr::bind_rows(df_precip_r45_change, df_precip_r85_change)
+
+df_tmean_r45_change <- 
+  as.data.frame(raster::rasterToPoints(r_tmean_r45_change)) %>% 
+  magrittr::set_colnames(c("lon", "lat", "Tmean_C_change")) %>% 
+  dplyr::mutate(Scenario = "RCP4.5")
+
+df_tmean_r85_change <- 
+  as.data.frame(raster::rasterToPoints(r_tmean_r85_change)) %>% 
+  magrittr::set_colnames(c("lon", "lat", "Tmean_C_change")) %>% 
+  dplyr::mutate(Scenario = "RCP8.5")
+
+df_tmean_change <- dplyr::bind_rows(df_tmean_r45_change, df_tmean_r85_change)
+
+# plot
+p_precip_hist <-
+  ggplot() +
+  geom_raster(data = df_precip_hist, aes(x = lon, y = lat, fill = precip_mm)) +
+  #geom_sf(data = sf::st_transform(subset(sf_rivers_EKSRB, STRAHLER >= 3), crs = raster::crs(r_precip_in))) +
+  geom_sf(data = sf::st_transform(sf_boundary, crs = raster::crs(r_precip_in)), color = "black", fill = NA) +
+  scale_fill_viridis(name = "[mm]", 
+                     direction = -1, 
+                     breaks = c(900, 1000)) +
+  scale_x_continuous(breaks = seq(-97, -95, 1)) +
+  scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
+  coord_sf(expand = F) +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        #legend.position = "bottom",
+        panel.border = element_blank()) 
+
+p_tmean_hist <-
+  ggplot() +
+  geom_raster(data = df_tmean_hist, aes(x = lon, y = lat, fill = Tmean_C)) +
+  #geom_sf(data = sf::st_transform(subset(sf_rivers_EKSRB, STRAHLER >= 3), crs = raster::crs(r_precip_in))) +
+  geom_sf(data = sf::st_transform(sf_boundary, crs = raster::crs(r_precip_in)), color = "black", fill = NA) +
+  scale_fill_viridis(name = "[\u00b0C]",
+                     option = "C",
+                     breaks = c(12, 13)) +
+  scale_x_continuous(breaks = seq(-97, -95, 1)) +
+  scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
+  coord_sf(expand = F) +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        #legend.position = "bottom",
+        panel.border = element_blank()) 
+
+
+p_precip_change <- 
+  ggplot() +
+  geom_raster(data = df_precip_r45_change, aes(x = lon, y = lat, fill = precip_mm_change)) +
+  #geom_sf(data = sf::st_transform(subset(sf_rivers_EKSRB, STRAHLER >= 3), crs = raster::crs(r_precip_in))) +
+  geom_sf(data = sf::st_transform(sf_boundary, crs = raster::crs(r_precip_in)), color = "black", fill = NA) +
+  scale_fill_gradient2(name = "[mm]", 
+                     limits = c(-16, 10),
+                     breaks = seq(-10, 10, 10),
+                     labels = c("-10", "0", "+10")) +
+  scale_x_continuous(breaks = seq(-97, -95, 1)) +
+  scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
+  coord_sf(expand = F) +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        #legend.position = "bottom",
+        panel.border = element_blank()) 
+
+p_tmean_change <- 
+  ggplot() +
+  geom_raster(data = df_tmean_r45_change, aes(x = lon, y = lat, fill = Tmean_C_change)) +
+  #geom_sf(data = sf::st_transform(subset(sf_rivers_EKSRB, STRAHLER >= 3), crs = raster::crs(r_precip_in))) +
+  geom_sf(data = sf::st_transform(sf_boundary, crs = raster::crs(r_precip_in)), color = "black", fill = NA) +
+  scale_fill_gradient(name = "[\u00b0C]", 
+                      low = "yellow", 
+                      high = "red",
+                     limits = c(3, 3.11),
+                     breaks = c(3.0, 3.05, 3.1),
+                     labels = c("+3.0", "+3.05", "+3.10")) +
+    scale_x_continuous(breaks = seq(-97, -95, 1)) +
+    scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
+  coord_sf(expand = F) +
+  theme(axis.title = element_blank(),
+          axis.text.y = element_text(angle = 90, hjust = 0.5),
+          #legend.position = "bottom",
+          panel.border = element_blank()) 
+
+
+(
+  (p_precip_hist + labs(title = "(a) Mean Annual Precipitation (1981-2010)") ) +
+    (p_tmean_hist + labs(title = "(b) Mean Annual Air Temperature (1981-2010)") ) + 
+    (p_precip_change + labs(title = "(c) RCP4.5 Mean Annual Precipitation Change") ) + 
+    (p_tmean_change + labs(title = "(d) RCP4.5 Mean Annual Temperature Change")) +
+    plot_layout(nrow = 2, byrow = T)
+) %>% 
+  ggsave(file.path("plots", "Map-EKSRB_Climate.png"),
+         plot = .,
+         width = 190, height = 120, units = "mm")
+
+
+sf_SVI$SVI_std[sf_SVI$SVI_std > 2] <- 2
+sf_SVI$SVI_std[sf_SVI$SVI_std < -2] <- -2
+
+#p_SVI <-
+ggplot() + 
+  geom_sf(data = sf_SVI, aes(fill = SVI_std), color = NA) +
+  geom_sf(data = sf_boundary, color = "black", fill = NA) +
+  scale_fill_gradient2(name = "[-]",
+                       low = "#018571",
+                       mid = "#f5f5f5",
+                       high = "#a6611a",
+                       labels = c("< -2", "-1", "0", "+1", "> +2")) + 
+  scale_x_continuous(breaks = seq(-97, -95, 1)) +
+  scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
+  coord_sf(expand = F) +
+  labs(title = "Preliminary Social Vulnerability Index") +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        #legend.position = "bottom",
+        panel.border = element_blank())  +
+  ggsave(file.path("plots", "Map-EKSRB_SVI.png"),
+         width = 95, height = 60, units = "mm")
