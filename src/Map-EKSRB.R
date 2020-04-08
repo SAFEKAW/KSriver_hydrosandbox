@@ -170,8 +170,8 @@ p_monitoring <-
   labs(title = "EKSRB monitoring network") +
   theme(axis.title = element_blank(),
         axis.text.y = element_text(angle = 90, hjust = 0.5)) +
-  ggsave(file.path("plots", "Map-EKSRB_Monitoring.png"), width = 85, height = 67, units = "mm") +
-  ggsave(file.path("plots", "Map-EKSRB_Monitoring.pdf"), width = 85, height = 67, units = "mm", device = cairo_pdf) +
+  ggsave(file.path("plots", "Map-EKSRB_Monitoring.png"), width = 80, height = 63, units = "mm") +
+  ggsave(file.path("plots", "Map-EKSRB_Monitoring.pdf"), width = 80, height = 63, units = "mm", device = cairo_pdf) +
   NULL
 
 
@@ -346,8 +346,8 @@ p_tmean_change <-
                       low = "yellow", 
                       high = "red",
                      limits = c(3, 3.11),
-                     breaks = c(3.0, 3.05, 3.1),
-                     labels = c("+3.0", "+3.05", "+3.10")) +
+                     breaks = c(3.0, 3.1),
+                     labels = c("+3.0", "+3.1")) +
     scale_x_continuous(breaks = seq(-97, -95, 1)) +
     scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
   coord_sf(expand = F) +
@@ -358,15 +358,15 @@ p_tmean_change <-
 
 
 (
-  (p_precip_hist + labs(title = "(a) Mean Annual Precipitation (1981-2010)") ) +
-    (p_tmean_hist + labs(title = "(b) Mean Annual Air Temperature (1981-2010)") ) + 
-    (p_precip_change + labs(title = "(c) RCP4.5 Mean Annual Precipitation Change") ) + 
-    (p_tmean_change + labs(title = "(d) RCP4.5 Mean Annual Temperature Change")) +
+  (p_precip_hist + labs(title = "(a) Precipitation (1981-2010)") ) +
+    (p_tmean_hist + labs(title = "(b) Air Temperature (1981-2010)") ) + 
+    (p_precip_change + labs(title = "(c) RCP4.5 Precipitation Change") ) + 
+    (p_tmean_change + labs(title = "(d) RCP4.5 Air Temperature Change")) +
     plot_layout(nrow = 2, byrow = T)
 ) %>% 
   ggsave(file.path("plots", "Map-EKSRB_Climate.png"),
          plot = .,
-         width = 190, height = 120, units = "mm")
+         width = 150, height = 90, units = "mm")
 
 
 sf_SVI$SVI_std[sf_SVI$SVI_std > 2] <- 2
@@ -376,18 +376,18 @@ sf_SVI$SVI_std[sf_SVI$SVI_std < -2] <- -2
 ggplot() + 
   geom_sf(data = sf_SVI, aes(fill = SVI_std), color = NA) +
   geom_sf(data = sf_boundary, color = "black", fill = NA) +
-  scale_fill_gradient2(name = "[-]",
+  scale_fill_gradient2(name = NULL,
                        low = "#018571",
                        mid = "#f5f5f5",
                        high = "#a6611a",
-                       labels = c("< -2", "-1", "0", "+1", "> +2")) + 
+                       labels = c("< -2", "-1", "0", "1", "> 2")) + 
   scale_x_continuous(breaks = seq(-97, -95, 1)) +
   scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
   coord_sf(expand = F) +
-  labs(title = "Preliminary Social Vulnerability Index") +
+  labs(title = "Prelim. Social Vulnerability Index") +
   theme(axis.title = element_blank(),
         axis.text.y = element_text(angle = 90, hjust = 0.5),
-        #legend.position = "bottom",
+        legend.position = "bottom",
         panel.border = element_blank())  +
   ggsave(file.path("plots", "Map-EKSRB_SVI.png"),
-         width = 95, height = 60, units = "mm")
+         width = 65, height = 75, units = "mm")

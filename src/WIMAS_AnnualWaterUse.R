@@ -133,7 +133,7 @@ ggplot(df_wimas_sector_source, aes(x = Year, y = WaterUse_km3, fill = Sector)) +
   scale_fill_discrete(name = NULL) +
   labs(title = "Annual Water Use by Sector and Source") +
   ggsave(file.path("results", "WIMAS_AnnualWaterUse_BySector+Source.png"),
-         width = 120, height = 120, units = "mm")
+         width = 110, height = 110, units = "mm")
 
 # total irrigation
 ggplot(subset(df_wimas_sector, Sector == "Irrigation"), 
@@ -251,7 +251,7 @@ p_irrigation.climate <-
 #        legend.justification = c(1.01, 1.01)) +
   NULL
 
-((p_annualuse / p_irrigation.climate) + plot_layout(heights = c(1, 1.5))) %>% 
+((p_annualuse / p_irrigation.climate) + plot_layout(heights = c(1, 1.35))) %>% 
   ggsave(file.path("plots", "WIMAS_AnnualUse+ClimateSensitivity.png"),
          plot = .,
-         width = 94, height = 130, units = "mm")
+         width = 94, height = 120, units = "mm")
