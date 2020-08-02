@@ -131,81 +131,8 @@ df_all <-
 
 ## inspect data for completeness
 rnoaa::vis_miss(df_all)
+df_all$date[is.na(df_all$tmax_c) & lubridate::year(df_all$date) > 1950]
 
 ## save output
 df_all %>% 
   readr::write_csv(file.path("results", "NOAA-GHCND_LawrenceMetData.csv"))
-
-
-
-
-
-
-# summarize by year, month
-df$year <- lubridate::year(df$date)
-df$month <- lubridate::month(df$date)
-
-df_mo <-
-  df %>% 
-  dplyr::group_by(year, month) %>% 
-  dplyr::summarize(n_prcp = sum(is.finite(prcp_mm)),
-                   n_tmax = sum(is.finite(tmax_c)),
-                   n_tmin = sum(is.finite(tmin_c)),
-                   prcp_mm_sum = sum(prcp_mm, na.rm = T),
-                   tmax_c_mean = mean(tmax_c, na.rm = T),
-                   tmin_c_mean = mean(tmin_c, na.rm = T)) %>% 
-  dplyr::mutate(n_days_mo = lubridate::days_in_month(month)) %>% 
-  dplyr::ungroup()
-
-# set months with too many missing days to NA
-day_thres <- 3
-df_mo$prcp_mm_sum[(df_mo$n_days_mo - df_mo$n_prcp > day_thres)] <- NA
-df_mo$tmax_c_mean[(df_mo$n_days_mo - df_mo$n_tmax > day_thres)] <- NA
-df_mo$tmin_c_mean[(df_mo$n_days_mo - df_mo$n_tmin > day_thres)] <- NA
-
-## annual totals
-df_yr <- 
-  df_mo %>% 
-  dplyr::group_by(year) %>% 
-  dplyr::summarize(prcp_mm = sum(prcp_mm_sum),
-                   tmax_c = mean(tmax_c_mean),
-                   tmin_c = mean(tmin_c_mean)) %>% 
-  dplyr::ungroup()
-
-## annual extremes
-df_yr_extreme <-
-  df %>% 
-  dplyr::group_by(year) %>% 
-  dplyr::summarize(prcp_gt_25mm = sum(prcp_mm > 25),
-                   prcp_gt_50mm = sum(prcp_mm > 50),
-                   prcp_gt_75mm = sum(prcp_mm > 75))
-
-## plots
-# monthly trends
-ggplot(df_mo, aes(x = year, y = prcp_mm_sum)) +
-  geom_point() +
-  facet_wrap(~month, scales = "free_y") +
-  stat_smooth(method = "lm")
-
-ggplot(df_mo, aes(x = year, y = tmax_c_mean)) +
-  geom_point() +
-  facet_wrap(~month, scales = "free_y") +
-  stat_smooth(method = "lm")
-
-ggplot(df_mo, aes(x = year, y = tmin_c_mean)) +
-  geom_point() +
-  facet_wrap(~month, scales = "free_y") +
-  stat_smooth(method = "lm")
-
-# annual trends
-ggplot(df_yr, aes(x = year, y = prcp_mm)) +
-  geom_point() +
-  stat_smooth(method = "lm")
-
-ggplot(df_yr, aes(x = year, y = tmax_c)) +
-  geom_point() +
-  stat_smooth(method = "lm")
-
-ggplot(df_yr, aes(x = year, y = tmin_c)) +
-  geom_point() +
-  stat_smooth(method = "lm")

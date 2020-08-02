@@ -1,0 +1,140 @@
+---
+title: "Lawrence's Climate Over the Past 150 Years"
+author: "Samuel C. Zipper"
+date: "8/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# here we will set up our workspace and pre-process the data
+library(tidyverse)
+# function used to put sen's slope onto ggplots
+sen <- function(..., weights = NULL) {
+  mblm::mblm(...)
+}
+
+## load output from NOAA-GHCND_GetLawrenceMetData.R
+df_all <-
+  readr::read_csv(file.path("results", "NOAA-GHCND_LawrenceMetData.csv"),
+                  col_types = cols(
+                    date = col_date(),
+                    station_prcp = col_character(),
+                    prcp_mm = col_double(),
+                    station_tmax = col_character(),
+                    tmax_c = col_double(),
+                    station_tmin = col_character(),
+                    tmin_c = col_double()
+                  ))
+
+# summarize by year, month
+df_all$year <- lubridate::year(df_all$date)
+df_all$month <- lubridate::month(df_all$date)
+df_all$year_mo <- paste0(df_all$year, "_", df_all$month)
+
+## first: figure out missing data by year to see where to start analysis
+df_NAsByYear <-
+  df_all %>% 
+  dplyr::group_by(year) %>% 
+  dplyr::summarize(missing_prcp = sum(is.na(prcp_mm)),
+                   missing_tmax = sum(is.na(tmax_c)),
+                   missing_tmin = sum(is.na(tmin_c)))
+
+# years to include: no more than 10% missing data (<36.5 days)
+yr_day_thres <- 36.5
+yrs_prcp <- df_NAsByYear$year[df_NAsByYear$missing_prcp < yr_day_thres]
+yrs_tmax <- df_NAsByYear$year[df_NAsByYear$missing_tmax < yr_day_thres]
+yrs_tmin <- df_NAsByYear$year[df_NAsByYear$missing_tmin < yr_day_thres]
+
+## now: screen out months missing more than 10% of data (> 3 days)
+df_NAsByMo <-
+  df %>% 
+  dplyr::group_by(year_mo) %>% 
+  dplyr::summarize(missing_prcp = sum(is.na(prcp_mm)),
+                   missing_tmax = sum(is.na(tmax_c)),
+                   missing_tmin = sum(is.na(tmin_c))) %>% 
+  dplyr::ungroup()
+
+# year-months to include: no more than 10% missing data (<3 days)
+yrmo_day_thres <- 3
+yrmo_prcp <- df_NAsByMo$year_mo[df_NAsByMo$missing_prcp < yrmo_day_thres]
+yrmo_tmax <- df_NAsByMo$year_mo[df_NAsByMo$missing_tmax < yrmo_day_thres]
+yrmo_tmin <- df_NAsByMo$year_mo[df_NAsByMo$missing_tmin < yrmo_day_thres]
+
+# set everything you don't want to keep to NA
+df <-
+  df_all
+df$prcp_mm[!(df$year %in% yrs_prcp) & !(df$year_mo %in% yrmo_prcp)] <- NA
+df$tmax_c[!(df$year %in% yrs_tmax) & !(df$year_mo %in% yrmo_tmax)] <- NA
+df$tmin_c[!(df$year %in% yrs_tmin) & !(df$year_mo %in% yrmo_tmin)] <- NA
+df$station_prcp[!(df$year %in% yrs_prcp) & !(df$year_mo %in% yrmo_prcp)] <- NA
+df$station_tmax[!(df$year %in% yrs_tmax) & !(df$year_mo %in% yrmo_tmax)] <- NA
+df$station_tmin[!(df$year %in% yrs_tmin) & !(df$year_mo %in% yrmo_tmin)] <- NA
+
+## summarize for plotting
+# annual totals
+df_yr <- 
+  df %>% 
+  dplyr::group_by(year) %>% 
+  dplyr::summarize(prcp_mm = sum(prcp_mm),
+                   tmax_c = mean(tmax_c),
+                   tmin_c = mean(tmin_c)) %>% 
+  dplyr::ungroup()
+
+# monthly totals
+df_mo <- 
+  df %>% 
+  dplyr::group_by(year, month) %>% 
+  dplyr::summarize(prcp_mm = sum(prcp_mm),
+                   tmax_c = mean(tmax_c),
+                   tmin_c = mean(tmin_c)) %>% 
+  dplyr::ungroup()
+
+# annual extremes
+df_yr_extreme <-
+  df %>% 
+  dplyr::group_by(year) %>% 
+  dplyr::summarize(prcp_gt_25mm = sum(prcp_mm > 25),
+                   prcp_gt_50mm = sum(prcp_mm > 50),
+                   prcp_gt_75mm = sum(prcp_mm > 75)) %>% 
+  subset(complete.cases(.))
+
+```
+
+## The Backstory
+
+My first summer in Kansas, 2020, was an eventful one - the COVID-19 outbreak had our family in quarantine, and we had our second kid in late June. These circumstances meant that "walking around" was one of the primary ways to pass the time, and I soon got annoyed that the weather was hot*. For a bit of mental stimulation during my parental leave, I decided to figure out: has it always been this hot in Lawrence?
+
+*As a native of the Seattle area, I define "hot" as anything exceeding ~75$^\circ$F. 
+
+## The Data
+
+I wanted to build as complete a historical climate dataset as possible for Lawrence. Using the [NOAA CDO Mapper](https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily), I identified all meteorological stations within 10 miles of the city that were part of the [Global Historical Climatology Network Daily](https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/global-historical-climatology-network-ghcn) dataset. 
+
+To generate a composite daily dataset, I used the [KU station](https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USC00144559/detail) as my baseline because it has the longest record. I then filled in any gaps using, in order:
+ - Airport
+ - Kansas River
+ - KLWN
+ - Clinton Lake
+ - Lecompton
+ - Tonganoxie
+ - Vinland
+ - Worden
+ - Perry Lake
+
+Mixing these datasets obviously has some limitations, as they are in some cases over 20 miles apart. However, in the end, X% of the precipitation data, Y% of the Tmax data, and Z% of the Tmin data are from the KU station.
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
