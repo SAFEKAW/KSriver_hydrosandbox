@@ -41,7 +41,7 @@ yrs_tmin <- df_NAsByYear$year[df_NAsByYear$missing_tmin < yr_day_thres]
 
 ## now: screen out months missing more than 10% of data (> 3 days)
 df_NAsByMo <-
-  df %>% 
+  df_all %>% 
   dplyr::group_by(year_mo) %>% 
   dplyr::summarize(missing_prcp = sum(is.na(prcp_mm)),
                    missing_tmax = sum(is.na(tmax_c)),

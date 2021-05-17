@@ -124,17 +124,3 @@ To generate a composite daily dataset, I used the [KU station](https://www.ncdc.
  - Perry Lake
 
 Mixing these datasets obviously has some limitations, as they are in some cases over 20 miles apart. However, in the end, X% of the precipitation data, Y% of the Tmax data, and Z% of the Tmin data are from the KU station.
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
