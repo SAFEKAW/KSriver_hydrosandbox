@@ -7,6 +7,9 @@ sen <- function(..., weights = NULL) {
   mblm::mblm(...)
 }
 
+## year to start analysis
+yr_start <- 1921
+
 ## load output from NOAA-GHCND_GetLawrenceMetData.R
 df_all <-
   readr::read_csv(file.path("results", "NOAA-GHCND_LawrenceMetData.csv"),
@@ -24,6 +27,8 @@ df_all <-
 df_all$year <- lubridate::year(df_all$date)
 df_all$month <- lubridate::month(df_all$date)
 df_all$year_mo <- paste0(df_all$year, "_", df_all$month)
+
+df_all <- subset(df_all, year >= yr_start)
 
 ## first: figure out missing data by year to see where to start analysis
 df_NAsByYear <-
@@ -99,8 +104,19 @@ df_mo <-
 # monthly trends
 ggplot(df_mo, aes(x = year, y = prcp_mm)) +
   geom_point() +
-  facet_wrap(~month, scales = "free_y") +
-  stat_smooth(method = "sen")
+  scale_x_continuous(name = "Year") +
+  scale_y_continuous(name = "Precip [mm]") +
+  facet_wrap(~month, scales = "free_y",
+             labeller = as_labeller(c("1" = "Jan", "2" = "Feb", "3" = "Mar",
+                                      "4" = "Apr", "5" = "May", "6" = "Jun",
+                                      "7" = "Jul", "8" = "Aug", "9" = "Sep",
+                                      "10" = "Oct", "11" = "Nov", "12" = "Dec"))) +
+  stat_smooth(method = "sen") +
+  labs(title = "Lawrence KS Monthly Precipitation Trends",
+       subtitle = "Sen's Slope, 1921-2020") +
+  theme_bw() +
+  ggsave(file.path("plots", "Lawrence_MonthlyPrecipTrends.png"),
+         width = 12, height = 6, units = "in")
 
 ggplot(df_mo, aes(x = year, y = tmax_c)) +
   geom_point() +
