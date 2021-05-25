@@ -1,6 +1,6 @@
 ## WIMAS_AnnualWaterUse.R
 
-source(file.path("src", "paths+packages.R"))
+source(file.path("code", "paths+packages.R"))
 
 # load WIMAS
 df_wimas <-
@@ -255,3 +255,21 @@ p_irrigation.climate <-
   ggsave(file.path("plots", "WIMAS_AnnualUse+ClimateSensitivity.png"),
          plot = .,
          width = 94, height = 120, units = "mm")
+
+# remove panel (a) - just plot annual use vs. precip
+ggplot(subset(df_wimas_sector_source_met, Sector == "Irrigation"),
+       aes(x = Precip_mm, y = WaterUse_km3, shape = source, linetype = source)) +
+  stat_smooth(method = "lm", color = "gray45") +
+  geom_point(color = col.cat.red) +
+  scale_y_continuous(name = "Annual Irrigation [km\u00b3]", expand = c(0,0)) +
+  scale_x_continuous(name = "Annual Precipitation [mm]") +
+  scale_shape_manual(name = NULL, values = c("Groundwater" = 19, "Surface Water" = 1)) +
+  scale_linetype_manual(name = NULL, values = c("Groundwater" = 1, "Surface Water" = 2)) +
+  labs(title = "Irrigation Sensitivity to Climate") +
+  coord_cartesian(ylim = c(0, 50)) +
+  theme(legend.position = "bottom") +
+  ggsave(file.path("plots", "WIMAS_ClimateSensitivity.png"),
+         width = 80, height = 70, units = "mm") +
+  #  theme(legend.position = c(1,1),
+  #        legend.justification = c(1.01, 1.01)) +
+  NULL
