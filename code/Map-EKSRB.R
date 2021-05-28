@@ -1,6 +1,6 @@
 ## Map-EKSRB.R
 
-source(file.path("src", "paths+packages.R"))
+source(file.path("code", "paths+packages.R"))
 
 ## prep CDL data
 # plot snapshot of land use in a single year
@@ -384,7 +384,7 @@ ggplot() +
   scale_x_continuous(breaks = seq(-97, -95, 1)) +
   scale_y_continuous(breaks = seq(38.5, 40, 0.5)) +
   coord_sf(expand = F) +
-  labs(title = "Prelim. Social Vulnerability Index") +
+  labs(title = "Community Resilience Index") +
   theme(axis.title = element_blank(),
         axis.text.y = element_text(angle = 90, hjust = 0.5),
         legend.position = "bottom",
