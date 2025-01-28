@@ -7,6 +7,7 @@ require(patchwork)
 require(viridis)
 
 # path to onedrive directory
+path_drive <- "G:/My Drive/Projects-Active/SAFEKAW"
 path_onedrive <- "C:/Users/samzipper/OneDrive - The University of Kansas"
 path_plots <- file.path(path_onedrive, "Research", "KansasRiver", "plots")
 path_gis <- file.path(path_onedrive, "Research", "KansasRiver", "GIS")
