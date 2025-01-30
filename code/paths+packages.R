@@ -5,6 +5,7 @@ require(sf)
 require(raster)
 require(patchwork)
 require(viridis)
+source(file.path("code", "get_extremes.R"))
 
 # path to onedrive directory
 path_drive <- "G:/My Drive/Projects-Active/SAFEKAW"

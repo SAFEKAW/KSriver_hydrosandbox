@@ -25,9 +25,53 @@ df_yr <-
   df_clim |> 
   group_by(Year) |> 
   summarize(precip_mm_total = sum(precip_mm, na.rm=TRUE),
-            temp_C_mean = mean(temp_C, na.rm=TRUE))
+            temp_C_mean = mean(temp_C, na.rm=TRUE)) |> 
+  mutate(precip_prctl = percent_rank(precip_mm_total))
 
-# plot
+# calculate extremes
+df_yr$extremes <- get_extremes(df_yr$precip_prctl)
+
+
+# plot extreme type
+ggplot(df_yr, aes(x = Year, y = precip_mm_total/25.4, fill = extremes)) +
+  geom_col() +
+  labs(x = "Year", y = "Precipitation (inches/yr)", 
+       title = "Extreme Precipitation Years in the Kansas River Watershed") +
+  theme_scz() +
+  scale_fill_manual(values = c("normal" = col.gray, 
+                               "dry" = col.cat.org, "dry2dry" = col.cat.red,
+                               "wet" = col.cat.grn, "wet2wet" = col.cat.blu,
+                               "wet2dry" = col.cat.yel, "dry2wet" = "purple"))
+
+# extreme type per decade
+df_yr$decade <- cut(df_yr$Year, 
+                    breaks = seq(1900, 2030, 10),
+                    labels = seq(1900, 2020, 10),
+                    include.lowest = T)
+df_decade <-
+  df_yr |> 
+  group_by(decade) |> 
+  summarize(dry = sum(extremes == "dry", na.rm = TRUE),
+            dry2dry = sum(extremes == "dry2dry", na.rm = TRUE),
+            wet = sum(extremes == "wet", na.rm = TRUE),
+            wet2wet = sum(extremes == "wet2wet", na.rm = TRUE),
+            wet2dry = sum(extremes == "wet2dry", na.rm = TRUE),
+            dry2wet = sum(extremes == "dry2wet", na.rm = TRUE),
+            total_extremes = sum(extremes != "normal", na.rm = TRUE))
+df_decade |> 
+  pivot_longer(cols = c(dry, dry2dry, wet, wet2wet, wet2dry, dry2wet), names_to = "extreme_type", values_to = "n_extreme") |> 
+  subset(!is.na(decade)) |> 
+  ggplot(aes(x = decade, y = n_extreme, fill = extreme_type)) +
+  geom_col() +
+  labs(x = "Decade", y = "Number of Extreme Years", 
+       title = "Extreme Precipitation Years in the Kansas River Watershed") +
+  theme_scz() +
+  scale_fill_manual(values = c("normal" = col.gray, 
+                               "dry" = col.cat.org, "dry2dry" = col.cat.red,
+                               "wet" = col.cat.grn, "wet2wet" = col.cat.blu,
+                               "wet2dry" = col.cat.yel, "dry2wet" = "purple"))
+
+# plot annual totals
 lm_precip <- lm(precip_mm_total/25.4 ~ Year, data = df_yr)
 summary(lm_precip)
 
@@ -60,6 +104,7 @@ p_precip + p_temp +
   plot_layout(ncol = 1)
 ggsave(file.path(path_drive, "Data", "Climate", "Watershed_Avg_Annual_Plots.png"), 
        width = 8, height = 6, dpi = 300)
+
 
 ## monthly plots
 df_clim |> 
